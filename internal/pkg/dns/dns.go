@@ -29,6 +29,7 @@ import (
 	"sync"
 
 	"github.com/miekg/dns"
+	"github.com/sirupsen/logrus"
 )
 
 const dnsQuestionNameFilter = "cluster.local."
@@ -83,8 +84,10 @@ func (p *ProxyRewriteServer) ListenAndServe(ctx context.Context) <-chan error {
 // ServeDNS - serve DNS request
 func (p *ProxyRewriteServer) ServeDNS(rw dns.ResponseWriter, m *dns.Msg) {
 	// We don't need to handle requests that don't belong to the filter
+	logrus.Infof("!!! ServeDNS %+v", m)
 	if !strings.HasSuffix(m.Question[0].Name, dnsQuestionNameFilter) {
 		dns.HandleFailed(rw, m)
+		logrus.Info("HandleFailed")
 		return
 	}
 
@@ -108,9 +111,11 @@ func (p *ProxyRewriteServer) ServeDNS(rw dns.ResponseWriter, m *dns.Msg) {
 				continue
 			}
 			for _, answer := range msg.Answer {
+				logrus.Info("Answer")
 				p.rewriteIP(answer)
 			}
 			if err := rw.WriteMsg(msg); err == nil {
+				logrus.Info("*** Success")
 				return
 			}
 		}
