@@ -87,7 +87,7 @@ func (p *ProxyRewriteServer) ServeDNS(rw dns.ResponseWriter, m *dns.Msg) {
 	logrus.Infof("!!! ServeDNS %+v", m)
 	if !strings.HasSuffix(m.Question[0].Name, dnsQuestionNameFilter) {
 		dns.HandleFailed(rw, m)
-		logrus.Info("HandleFailed")
+		logrus.Info("HasSuffix")
 		return
 	}
 
@@ -96,6 +96,7 @@ func (p *ProxyRewriteServer) ServeDNS(rw dns.ResponseWriter, m *dns.Msg) {
 	config, err := dns.ClientConfigFromFile(p.ResolveConfPath)
 	if err != nil {
 		dns.HandleFailed(rw, m)
+		logrus.Info("ClientConfigFromFile")
 		return
 	}
 	var networks = []string{"tcp", "udp"}
@@ -111,7 +112,7 @@ func (p *ProxyRewriteServer) ServeDNS(rw dns.ResponseWriter, m *dns.Msg) {
 				continue
 			}
 			for _, answer := range msg.Answer {
-				logrus.Info("Answer")
+				logrus.Infof("Answer %+d", answer)
 				p.rewriteIP(answer)
 			}
 			if err := rw.WriteMsg(msg); err == nil {
