@@ -47,7 +47,7 @@ import (
 	kernelmech "github.com/networkservicemesh/api/pkg/api/networkservice/mechanisms/kernel"
 	registryapi "github.com/networkservicemesh/api/pkg/api/registry"
 	"github.com/networkservicemesh/cmd-nse-istio-proxy/internal/pkg/dns"
-	"github.com/networkservicemesh/sdk-kernel/pkg/kernel/networkservice/setiptables4nattemplate"
+	// "github.com/networkservicemesh/sdk-kernel/pkg/kernel/networkservice/setiptables4nattemplate"
 	"github.com/networkservicemesh/sdk-kernel/pkg/kernel/networkservice/setroutelocalnet"
 	"github.com/networkservicemesh/sdk/pkg/networkservice/chains/endpoint"
 	"github.com/networkservicemesh/sdk/pkg/networkservice/common/authorize"
@@ -205,7 +205,7 @@ func main() {
 	// ********************************************************************************
 	log.FromContext(ctx).Infof("executing phase 4: create network service endpoint")
 	// ********************************************************************************
-	rules := getIPTablesRules(ctx, config.RulesConfigPath)
+	// rules := getIPTablesRules(ctx, config.RulesConfigPath)
 
 	config.DNSConfigs = append(config.DNSConfigs, &networkservice.DNSConfig{
 		DnsServerIps: []string{ip.String()},
@@ -224,7 +224,7 @@ func main() {
 			}),
 			dnscontext.NewServer(config.DNSConfigs...),
 			setroutelocalnet.NewServer(),
-			setiptables4nattemplate.NewServer(rules),
+			// setiptables4nattemplate.NewServer(rules),
 			sendfd.NewServer(),
 		),
 	)
